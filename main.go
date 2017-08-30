@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/nlopes/slack"
+)
 
 func main() {
-	fmt.Println("vim-go")
+	api := slack.New("token")
+	os.Exit(run(api))
 }
