@@ -1,19 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"log"
-
 	"github.com/nlopes/slack"
+	"log"
 )
-
-// Config is config data token.
-type Config struct {
-	token string `json:"token"`
-}
 
 func run(api *slack.Client) int {
 	rtm := api.NewRTM()
@@ -34,23 +24,4 @@ func run(api *slack.Client) int {
 			}
 		}
 	}
-}
-
-func main() {
-	bytes, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-	fmt.Println(bytes)
-
-	var config Config
-	if err := json.Unmarshal(bytes, &config.token); err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-	fmt.Println(config)
-
-	api := slack.New(config.token)
-	os.Exit(run(api))
 }
