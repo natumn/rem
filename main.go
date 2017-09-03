@@ -10,9 +10,9 @@ import (
 	"github.com/nlopes/slack"
 )
 
-// Config is config data token.
+// Config is slack token data.
 type Config struct {
-	token string `json:"token"`
+	Token string `json:"token"`
 }
 
 func run(api *slack.Client) int {
@@ -42,15 +42,13 @@ func main() {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	fmt.Println(bytes)
 
 	var config Config
-	if err := json.Unmarshal(bytes, &config.token); err != nil {
+	if err := json.Unmarshal(bytes, &config); err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	fmt.Println(config)
 
-	api := slack.New(config.token)
+	api := slack.New(config.Token)
 	os.Exit(run(api))
 }
