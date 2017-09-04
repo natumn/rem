@@ -2,3 +2,5 @@ package: github.com/phustly/rem
 import:
 - package: github.com/nlopes/slack
   version: ^0.1.0
+- package: github.com/kelseyhightower/envconfig
+  version: ^1.3.0

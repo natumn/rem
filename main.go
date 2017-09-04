@@ -1,18 +1,15 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"log"
 
 	"github.com/nlopes/slack"
+	"github.com/kelseyhightower/envconfig"
 )
 
-// Config is slack token data.
-type Config struct {
-	Token string `json:"token"`
+type envConfig struct {
+	BotToken string `envconfig:"BOT_TOKEN" required:"true"`
 }
 
 func run(api *slack.Client) int {
@@ -27,7 +24,8 @@ func run(api *slack.Client) int {
 				log.Print("hello, event")
 			case *slack.MessageEvent:
 				log.Print("message, event")
-				rtm.SendMessage(rtm.NewOutgoingMessage("Hello world", ev.Channel))
+				rtm.SendMessage(rtm.NewOutgoingMessage("ok!", ev.Channel))
+			
 			case *slack.InvalidAuthEvent:
 				log.Print("Invalid credentials")
 				return 1
@@ -37,18 +35,13 @@ func run(api *slack.Client) int {
 }
 
 func main() {
-	bytes, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Println(err.Error())
+	var env envConfig
+	if err := envconfig.Process("", &env); err != nil {
+		log.Printf("[ERROR] Failed to process env var: %s", err)
 		os.Exit(1)
 	}
+	log.Printf("[INFO] Start slack event listening")
 
-	var config Config
-	if err := json.Unmarshal(bytes, &config); err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	api := slack.New(config.Token)
+	api := slack.New(env.BotToken)
 	os.Exit(run(api))
 }
